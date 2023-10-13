@@ -1,3 +1,4 @@
+import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -88,7 +89,7 @@ public class TreeTest {
         String realEntry = Utility.readFile("Tree");
         LOGGER.log(Level.INFO, "real: " + realEntry);
 
-        assertTrue(expectedEntry.equals(realEntry));
+        assertEquals(expectedEntry, realEntry); // (expectedEntry.equals(realEntry));
 
     }
 

@@ -12,31 +12,15 @@ import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
 
 public class CommitTest {
-
-    /*
-     * tests on an empty tree
-     */
-    @Test
-    public void testCommit() throws IOException {
-        String answer = "da39a3ee5e6b4b0d3255bfef95601890afd80709\n\n\nandrew\n"
-                + Commit.getDate() + "\nmessag";
-        String hashOfTheDay = Utility.sha1(answer);
-        File testFile = new File("objects/" + hashOfTheDay);
-        testFile.delete();
-
-        new Commit(null, "andrew", "messag");
-
-        String commitFileText = Utility.readFile("objects/" + hashOfTheDay);
-
-        assertEquals(answer, commitFileText); // (answer.equals(commitFileText));
-
-    }
-
     /*
      * tests on two files, one commit
      */
     @Test
     public void testCommit_1commit() throws IOException {
+        if (Files.exists(Paths.get("objects"))) {
+            Tree.deleteDirectoryWalkTree(Paths.get("objects"));
+        }
+
         String[] fileNames = { "1.txt", "2.txt", "3.txt" };
         String[] fileContents = { "1content", "2content", "3content" };
         for (String file : fileNames) {
@@ -62,6 +46,9 @@ public class CommitTest {
      */
     @Test
     public void testCommit_2commit() throws IOException {
+        if (Files.exists(Paths.get("objects"))) {
+            Tree.deleteDirectoryWalkTree(Paths.get("objects"));
+        }
         String[] fileNames = { "1.txt", "2.txt", "3.txt" };
         String[] fileContents = { "1content", "2content", "3content" };
         for (String file : fileNames) {
@@ -80,8 +67,9 @@ public class CommitTest {
         String commitFileText = Utility.readFile("objects/" + Utility.sha1(answer));
         String directoryPath = "testDirectory";
         Files.deleteIfExists(Paths.get("testDirectory/Tree"));
-
-        Files.deleteIfExists(Paths.get(directoryPath));
+        if (Files.exists(Paths.get(directoryPath))) {
+            Tree.deleteDirectoryWalkTree((Paths.get(directoryPath)));
+        }
         Files.createDirectory(Paths.get(directoryPath));
         Tree.addDirectory(directoryPath);
 

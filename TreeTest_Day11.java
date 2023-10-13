@@ -23,9 +23,12 @@ public class TreeTest_Day11 {
         String[] fileContents = { "1content", "2content", "3content", "4content", "5content" };
 
         Files.deleteIfExists(Paths.get("Tree"));
-
-        Tree.deleteDirectoryWalkTree(Paths.get(innerDirectoryPath));
-        Tree.deleteDirectoryWalkTree(Paths.get(directoryPath));
+        if (Files.exists(Paths.get(innerDirectoryPath))) {
+            Tree.deleteDirectoryWalkTree(Paths.get(innerDirectoryPath));
+        }
+        if (Files.exists(Paths.get(directoryPath))) {
+            Tree.deleteDirectoryWalkTree(Paths.get(directoryPath));
+        }
 
         Files.createDirectory(Paths.get(directoryPath));
         Files.createDirectory(Paths.get(innerDirectoryPath));
