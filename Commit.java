@@ -77,7 +77,7 @@ public class Commit {
      * https://www.digitalocean.com/community/tutorials/java-simpledateformat-java-
      * date-format
      */
-    private static String getDate() {
+    public static String getDate() {
         Date currentDate = new Date();
 
         SimpleDateFormat dataFormat = new SimpleDateFormat("MMM dd, yyyy");

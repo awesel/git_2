@@ -46,27 +46,41 @@ public class Tester {
 
         // Tree.addDirectory(directoryPath);
 
-        String directoryPath = "testDirectory";
-        String innerDirectoryPath = directoryPath + "/innerTest";
-        String[] fileNames = { "1.txt", "2.txt", "3.txt", "innerTest/4.txt", "innerTest/5.txt" };
-        String[] fileContents = { "1content", "2content", "3content", "4content", "5content" };
+        // String directoryPath = "testDirectory";
+        // String innerDirectoryPath = directoryPath + "/innerTest";
+        // String[] fileNames = { "1.txt", "2.txt", "3.txt", "innerTest/4.txt",
+        // "innerTest/5.txt" };
+        // String[] fileContents = { "1content", "2content", "3content", "4content",
+        // "5content" };
 
-        File treeFile = new File("Tree");
-        treeFile.delete();
+        // File treeFile = new File("Tree");
+        // treeFile.delete();
 
-        for (String fileName : fileNames) {
-            Files.deleteIfExists(Paths.get(directoryPath, fileName));
-        }
+        // for (String fileName : fileNames) {
+        // Files.deleteIfExists(Paths.get(directoryPath, fileName));
+        // }
 
-        Files.deleteIfExists(Paths.get(directoryPath));
-        Files.createDirectory(Paths.get(directoryPath));
-        Files.createDirectory(Paths.get(innerDirectoryPath));
+        // Files.deleteIfExists(Paths.get(directoryPath));
+        // Files.createDirectory(Paths.get(directoryPath));
+        // Files.createDirectory(Paths.get(innerDirectoryPath));
 
-        for (int i = 0; i < fileNames.length; i++) {
-            Utility.writeToFile(fileContents[i], directoryPath + "/" + fileNames[i]);
-        }
+        // for (int i = 0; i < fileNames.length; i++) {
+        // Utility.writeToFile(fileContents[i], directoryPath + "/" + fileNames[i]);
+        // }
 
-        Tree.addDirectory(directoryPath);
+        // Tree.addDirectory(directoryPath);
+
+        String answer = "da39a3ee5e6b4b0d3255bfef95601890afd80709\n\n\nandrew\n"
+                + Commit.getDate() + "\nmessag";
+        String hashOfTheDay = Utility.sha1(answer);
+        File testFile = new File("objects/" + hashOfTheDay);
+        testFile.delete();
+
+        new Commit(null, "andrew", "messag");
+
+        String commitFileText = Utility.readFile("objects/" + hashOfTheDay);
+        System.out.println(commitFileText);
+        System.out.println(answer);
 
     }
 }
