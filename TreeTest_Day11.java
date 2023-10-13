@@ -56,7 +56,7 @@ public class TreeTest_Day11 {
 
         Files.deleteIfExists(Paths.get(directoryPath));
         Files.createDirectory(Paths.get(directoryPath));
-        Files.createDirectory(Paths.get(innerDirectoryPath)); // Create innerTest directory
+        Files.createDirectory(Paths.get(innerDirectoryPath));
 
         for (int i = 0; i < fileNames.length; i++) {
             Utility.writeToFile(fileContents[i], directoryPath + "/" + fileNames[i]);
