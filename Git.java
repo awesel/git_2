@@ -24,6 +24,7 @@ public class Git {
             if ("blob".equals(fullLine[0].trim())) {
                 String content = Utility.readFile("./objects/" + fullLine[1].trim());
                 Utility.writeToFile(content, fullLine[2].trim());
+
             } else if ("tree".equals(fullLine[1].trim())) {
                 File newFolder = new File(fullLine[2].trim());
                 if (!newFolder.exists()) {
