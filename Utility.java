@@ -50,7 +50,8 @@ public class Utility {
             }
             reader.close();
         } catch (IOException ex) {
-            System.out.println("nah");
+            System.out.println("readFile failed");
+            ex.printStackTrace();
         }
         return currentString;
     }

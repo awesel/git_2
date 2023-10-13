@@ -1,5 +1,9 @@
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import org.junit.Test;
 
 public class Tester {
     public static void main(String args[]) throws IOException {
@@ -21,6 +25,48 @@ public class Tester {
         // new Blob("test.txt");
 
         // System.out.println("objects/" + Utility.sha1("a"));
-        new Commit(null, "andrew", "messag");
+        // new Commit(null, "andrew", "messag");
+        // String directoryPath = "testDirectory";
+        // String[] fileNames = { "1.txt", "2.txt", "3.txt" };
+        // String[] fileContents = { "1content", "2content", "3content" };
+
+        // File treeFile = new File("Tree");
+        // treeFile.delete();
+
+        // for (String fileName : fileNames) {
+        // Files.deleteIfExists(Paths.get(directoryPath, fileName));
+        // }
+
+        // Files.deleteIfExists(Paths.get(directoryPath));
+        // Files.createDirectory(Paths.get(directoryPath));
+
+        // for (int i = 0; i < 3; i++) {
+        // Utility.writeToFile(fileContents[i], directoryPath + "/" + fileNames[i]);
+        // }
+
+        // Tree.addDirectory(directoryPath);
+
+        String directoryPath = "testDirectory";
+        String innerDirectoryPath = directoryPath + "/innerTest";
+        String[] fileNames = { "1.txt", "2.txt", "3.txt", "innerTest/4.txt", "innerTest/5.txt" };
+        String[] fileContents = { "1content", "2content", "3content", "4content", "5content" };
+
+        File treeFile = new File("Tree");
+        treeFile.delete();
+
+        for (String fileName : fileNames) {
+            Files.deleteIfExists(Paths.get(directoryPath, fileName));
+        }
+
+        Files.deleteIfExists(Paths.get(directoryPath));
+        Files.createDirectory(Paths.get(directoryPath));
+        Files.createDirectory(Paths.get(innerDirectoryPath)); // Create innerTest directory
+
+        for (int i = 0; i < fileNames.length; i++) {
+            Utility.writeToFile(fileContents[i], directoryPath + "/" + fileNames[i]);
+        }
+
+        Tree.addDirectory(directoryPath);
+
     }
 }

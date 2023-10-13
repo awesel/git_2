@@ -17,7 +17,8 @@ public class Git {
         BufferedReader br = new BufferedReader(new FileReader("./objects/" + shaOfTree));
 
         String line;
-        while ((line = br.readLine()) != null) {
+        while (br.ready()) {
+            line = br.readLine();
             String[] fullLine = line.split(" : ");
 
             if ("blob".equals(fullLine[0].trim())) {

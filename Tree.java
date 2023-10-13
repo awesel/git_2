@@ -26,20 +26,48 @@ public class Tree {
      * in the tree.
      */
     public static void add(String fileName) throws IOException {
-        if (fileName.substring(0, 5).equals("tree")) {
+        String fileStart = fileName.substring(0, 4);
+        System.out.println("fileStart: " + fileStart);
+        String toCompare = "tree";
+        if (toCompare.equals(fileStart)) {
+            System.out.println("working");
             checkTreeFile();
-
-            Utility.writeToFile(fileName, "Tree");
+            String folderName = getAfterSlash(fileName);
+            String toAdd = getBeforeSecondColon(fileName) + " " + folderName;
+            Utility.writeToFile(toAdd, "Tree");
             Utility.writeToFile("\n", "Tree");
         } else {
+            System.out.println("not working");
+
             checkTreeFile();
 
             new Blob(fileName);
 
-            String newEntryForTree = "blob : " + Utility.sha1("a") + " : " + fileName;
+            String fileContent = Utility.readFile(fileName);
+            System.out.println(fileContent);
+            String newEntryForTree = "blob : " + Utility.sha1(fileContent) + " : "
+                    + getAfterSlash(fileName);
             Utility.writeToFile(newEntryForTree, "Tree");
             Utility.writeToFile("\n", "Tree");
         }
+    }
+
+    public static String getBeforeSecondColon(String input) {
+        int dummy = input.indexOf(':');
+
+        int indx = input.indexOf(':', dummy + 1);
+
+        return input.substring(0, indx + 1);
+    }
+
+    public static String getAfterSlash(String input) {
+        if (input.contains("/")) {
+            int slashIndex = input.lastIndexOf('/');
+
+            return input.substring(slashIndex + 1);
+        }
+        return null; // fail
+
     }
 
     public static void save() throws IOException {
@@ -94,11 +122,12 @@ public class Tree {
         ArrayList<String> folders = findFolders(directoryPath);
 
         for (String file : files) {
-            add(directoryPath + "/" + file);
+            System.out.println(file);
+            add(file);
         }
 
         for (String folder : folders) {
-            String childTreeSHA1 = addDirectory(directoryPath + "/" + folder);
+            String childTreeSHA1 = addDirectory(folder);
             add("tree : " + childTreeSHA1 + " : " + folder);
         }
 
