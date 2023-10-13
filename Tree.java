@@ -58,7 +58,7 @@ public class Tree {
 
     public static void add(String fileName) throws IOException {
         String fileStart = fileName.substring(0, 4);
-        System.out.println("fileStart: " + fileStart);
+        // System.out.println("fileStart: " + fileStart);
         System.out.println("fileName: " + fileName);
         String toCompare = "tree";
 
@@ -67,7 +67,7 @@ public class Tree {
             checkTreeFile();
             String path = getAfterSecondColon(fileName);
             String folderName = getAfterSlash(fileName);
-            System.out.println(folderName);
+            // System.out.println(folderName);
             File folderFile = new File(path);
             String whereToTree = folderFile.getParent();
             String toAdd = fileName;
@@ -76,7 +76,7 @@ public class Tree {
 
             if (whereToTree != null) {
                 whereToTree = whereToTree.trim();
-                System.out.println(whereToTree + "/Tree");
+                // System.out.println(whereToTree + "/Tree");
                 Utility.writeToFile(toAdd, whereToTree + "/Tree");
                 Utility.writeToFile("\n", whereToTree + "/Tree");
             } else {
@@ -88,15 +88,24 @@ public class Tree {
             String folderPath;
             File file = new File(fileName);
             String parentPath = file.getParent(); // this method gets the folder that the file is in
-            folderPath = parentPath + File.separator;
-            System.out.println("not working");
-            checkTreeFile();
-            new Blob(fileName);
-            String fileContent = Utility.readFile(fileName);
-            System.out.println(fileContent);
-            String newEntryForTree = "blob : " + Utility.sha1(fileContent) + " : " + getAfterSlash(fileName);
-            Utility.writeToFile(newEntryForTree, folderPath + "Tree");
-            Utility.writeToFile("\n", folderPath + "Tree");
+            folderPath = parentPath + "/";
+            if (parentPath != null) {
+                // System.out.println("not working");
+                checkTreeFile();
+                new Blob(fileName);
+                String fileContent = Utility.readFile(fileName);
+                System.out.println(fileContent);
+                String newEntryForTree = "blob : " + Utility.sha1(fileContent) + " : " + getAfterSlash(fileName);
+                Utility.writeToFile(newEntryForTree, folderPath + "Tree");
+                Utility.writeToFile("\n", folderPath + "Tree");
+            } else {
+                new Blob(fileName);
+                String fileContent = Utility.readFile(fileName);
+                String newEntryForTree = "blob : " + Utility.sha1(fileContent) + " : " + fileName;
+                Utility.writeToFile(newEntryForTree, "Tree");
+                Utility.writeToFile("\n", "Tree");
+
+            }
         }
     }
 
@@ -197,6 +206,10 @@ public class Tree {
             addDirectory(folder);
         }
 
+        Path treePath = Paths.get(directoryPath + "/Tree");
+        if (!Files.exists(treePath)) {
+            Files.createFile(treePath);
+        }
         new Blob(directoryPath + "/Tree");
         String shaOfTree = Utility.sha1(Utility.readFile(directoryPath + "/Tree"));
         // String afterSlash = getAfterSlash(directoryPath);

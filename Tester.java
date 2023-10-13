@@ -70,17 +70,30 @@ public class Tester {
 
         // Tree.addDirectory(directoryPath);
 
-        String answer = "da39a3ee5e6b4b0d3255bfef95601890afd80709\n\n\nandrew\n"
-                + Commit.getDate() + "\nmessag";
-        String hashOfTheDay = Utility.sha1(answer);
-        File testFile = new File("objects/" + hashOfTheDay);
-        testFile.delete();
+        String[] fileNames = { "1.txt", "2.txt", "3.txt" };
+        String[] fileContents = { "1content", "2content", "3content" };
+        for (String file : fileNames) {
+            Files.deleteIfExists(Paths.get(file));
+        }
+        Files.deleteIfExists(Paths.get("Head"));
+        Files.deleteIfExists(Paths.get("Tree"));
 
-        new Commit(null, "andrew", "messag");
+        for (int i = 0; i < fileNames.length; i++) {
+            Utility.writeToFile(fileContents[i], fileNames[i]);
+            Tree.add(fileNames[i]);
+        }
 
-        String commitFileText = Utility.readFile("objects/" + hashOfTheDay);
-        System.out.println(commitFileText);
-        System.out.println(answer);
+        Commit commit1 = new Commit(null, "andrew", "first commit (3 text files)");
+        String answer = "a97523be3bca4155de8b631f67847a3f37e3e6ad\n\n\nandrew\nOct 13, 2023\nfirst commit (3 text files)";
+        String commitFileText = Utility.readFile("objects/" + Utility.sha1(answer));
+        String directoryPath = "testDirectory";
+        Files.deleteIfExists(Paths.get("testDirectory/Tree"));
+
+        Files.deleteIfExists(Paths.get(directoryPath));
+        Files.createDirectory(Paths.get(directoryPath));
+        Tree.addDirectory(directoryPath);
+
+        new Commit(commit1.getSha1(), "andrew", "second commit (3 text files + 1 folder)");
 
     }
 }

@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class Commit {
+    String sha1 = "";
 
     public Commit(String parentSha, String author, String message) throws IOException {
         checkCommitFile();
@@ -27,6 +28,7 @@ public class Commit {
 
         commit += treeSha1 + "\n" + previous + "\n" + next + "\n" + author + "\n" + date + "\n" + message;
         String shaOfCommit = Utility.sha1(commit);
+        sha1 = shaOfCommit;
         clearHeadFile();
         Utility.writeToFile(shaOfCommit, "Head");
 
@@ -42,6 +44,10 @@ public class Commit {
 
     }
 
+    public String getSha1() {
+        return sha1;
+    }
+
     /*
      * inserts shaToAdd in the third line of ./objects/previousSha
      * I used this guide:
@@ -51,7 +57,9 @@ public class Commit {
         Path path = Paths.get("./objects", previousSha);
         List<String> lines = Files.readAllLines(path);
         lines.add(2, shaToAdd);
+        lines.remove(3);
         Files.write(path, lines);
+
     }
 
     private static void checkCommitFile() throws IOException {
