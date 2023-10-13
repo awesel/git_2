@@ -57,8 +57,16 @@ public class Utility {
     }
 
     public static void writeToFile(String content, String filename) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true))) {
-            writer.write(content);
+        try {
+            File file = new File(filename);
+
+            if (!file.exists()) { // ughhh
+                file.createNewFile();
+            }
+
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
+                writer.write(content);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

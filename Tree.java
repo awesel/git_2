@@ -4,9 +4,13 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,31 +29,86 @@ public class Tree {
      * Given a file, this method makes a blob and then makes an entry for the blob
      * in the tree.
      */
+    // public static void add(String fileName) throws IOException {
+    // String fileStart = fileName.substring(0, 4);
+    // System.out.println("fileStart: " + fileStart);
+    // String toCompare = "tree";
+    // if (toCompare.equals(fileStart)) {
+    // System.out.println("working");
+    // checkTreeFile();
+    // String folderName = getAfterSlash(fileName);
+    // String toAdd = getBeforeSecondColon(fileName) + " " + folderName;
+    // Utility.writeToFile(toAdd, "Tree");
+    // Utility.writeToFile("\n", "Tree");
+    // } else {
+    // System.out.println("not working");
+
+    // checkTreeFile();
+
+    // new Blob(fileName);
+
+    // String fileContent = Utility.readFile(fileName);
+    // System.out.println(fileContent);
+    // String newEntryForTree = "blob : " + Utility.sha1(fileContent) + " : "
+    // + getAfterSlash(fileName);
+    // Utility.writeToFile(newEntryForTree, "Tree");
+    // Utility.writeToFile("\n", "Tree");
+    // }
+    // }
+
     public static void add(String fileName) throws IOException {
         String fileStart = fileName.substring(0, 4);
         System.out.println("fileStart: " + fileStart);
+        System.out.println("fileName: " + fileName);
         String toCompare = "tree";
+
         if (toCompare.equals(fileStart)) {
             System.out.println("working");
             checkTreeFile();
+            String path = getAfterSecondColon(fileName);
             String folderName = getAfterSlash(fileName);
-            String toAdd = getBeforeSecondColon(fileName) + " " + folderName;
-            Utility.writeToFile(toAdd, "Tree");
-            Utility.writeToFile("\n", "Tree");
+            System.out.println(folderName);
+            File folderFile = new File(path);
+            String whereToTree = folderFile.getParent();
+            String toAdd = fileName;
+            if (getAfterSlash(fileName) != null)
+                toAdd = getBeforeSecondColon(fileName) + " " + getAfterSlash(fileName);
+
+            if (whereToTree != null) {
+                whereToTree = whereToTree.trim();
+                System.out.println(whereToTree + "/Tree");
+                Utility.writeToFile(toAdd, whereToTree + "/Tree");
+                Utility.writeToFile("\n", whereToTree + "/Tree");
+            } else {
+                Utility.writeToFile(toAdd, "Tree");
+                Utility.writeToFile("\n", "Tree");
+            }
+
         } else {
+            String folderPath;
+            File file = new File(fileName);
+            String parentPath = file.getParent(); // this method gets the folder that the file is in
+            folderPath = parentPath + File.separator;
             System.out.println("not working");
-
             checkTreeFile();
-
             new Blob(fileName);
-
             String fileContent = Utility.readFile(fileName);
             System.out.println(fileContent);
-            String newEntryForTree = "blob : " + Utility.sha1(fileContent) + " : "
-                    + getAfterSlash(fileName);
-            Utility.writeToFile(newEntryForTree, "Tree");
-            Utility.writeToFile("\n", "Tree");
+            String newEntryForTree = "blob : " + Utility.sha1(fileContent) + " : " + getAfterSlash(fileName);
+            Utility.writeToFile(newEntryForTree, folderPath + "Tree");
+            Utility.writeToFile("\n", folderPath + "Tree");
         }
+    }
+
+    public static void printContentsOfFolder(String folderPath) {
+        File folder = new File(folderPath);
+
+        File[] listOfFiles = folder.listFiles();
+
+        for (File file : listOfFiles) {
+            System.out.println(file.getName());
+        }
+
     }
 
     public static String getBeforeSecondColon(String input) {
@@ -58,6 +117,14 @@ public class Tree {
         int indx = input.indexOf(':', dummy + 1);
 
         return input.substring(0, indx + 1);
+    }
+
+    public static String getAfterSecondColon(String input) {
+        int dummy = input.indexOf(':');
+
+        int indx = input.indexOf(':', dummy + 1);
+
+        return input.substring(indx + 1, input.length());
     }
 
     public static String getAfterSlash(String input) {
@@ -127,12 +194,18 @@ public class Tree {
         }
 
         for (String folder : folders) {
-            String childTreeSHA1 = addDirectory(folder);
-            add("tree : " + childTreeSHA1 + " : " + folder);
+            addDirectory(folder);
         }
 
-        Blob treeBlob = new Blob("Tree");
-        return treeBlob.getSha1();
+        new Blob(directoryPath + "/Tree");
+        String shaOfTree = Utility.sha1(Utility.readFile(directoryPath + "/Tree"));
+        // String afterSlash = getAfterSlash(directoryPath);
+        // System.out.println("Directory path: " + directoryPath);
+        // System.out.println("After slash: " + afterSlash);
+        String toAdd = "tree : " + shaOfTree + " : " + directoryPath;
+        add(toAdd);
+
+        return shaOfTree;
     }
 
     /*
@@ -177,5 +250,36 @@ public class Tree {
         }
 
         return folders;
+    }
+
+    /*
+     * I got this method from online. This is NOT my own work
+     * https://softwarecave.org/2018/03/24/delete-directory-with-contents-in-java/
+     */
+    public static void deleteDirectoryWalkTree(Path path) throws IOException {
+        FileVisitor visitor = new SimpleFileVisitor<Path>() {
+
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                Files.delete(file);
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+                Files.delete(file);
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                if (exc != null) {
+                    throw exc;
+                }
+                Files.delete(dir);
+                return FileVisitResult.CONTINUE;
+            }
+        };
+        Files.walkFileTree(path, visitor);
     }
 }
