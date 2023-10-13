@@ -9,6 +9,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class Tree {
+    public Tree() throws IOException {
+        checkTreeFile();
+    }
+
     private static void checkTreeFile() throws IOException {
         Path pathToTree = Paths.get("Tree");
         if (!Files.exists(pathToTree))
@@ -21,12 +25,14 @@ public class Tree {
      */
     public static void add(String fileName) throws IOException {
         checkTreeFile();
-        Blob.makeBlob(fileName);
 
-        String newEntryForTree = "blob : " + Utility.sha1(fileName) + " : " + fileName;
+        new Blob(fileName);
+
+        String newEntryForTree = "blob : " + Utility.sha1("a") + " : " + fileName;
         Utility.writeToFile(newEntryForTree, "Tree");
         Utility.writeToFile("\n", "Tree");
 
+        new Blob("Tree");
     }
 
     /*
@@ -52,5 +58,8 @@ public class Tree {
 
         reader.close();
         writer.close();
+
+        new Blob("Tree");
+
     }
 }

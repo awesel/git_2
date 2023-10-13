@@ -2,14 +2,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Logger;
-import java.util.logging.Level;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 public class BlobTest {
-    private static final Logger LOGGER = Logger.getLogger(BlobTest.class.getName());
 
     /*
      * This is copied from the Day 9 Notion page. I did not write this myself.
@@ -26,7 +23,7 @@ public class BlobTest {
         Utility.writeToFile("hello world", "test.txt");
 
         // programmatically create a blob
-        Blob blob = new Blob("test.txt");
+        new Blob("test.txt");
 
         // Blob should create an objects folder.
         File folder = new File("objects");
@@ -50,11 +47,9 @@ public class BlobTest {
         Utility.writeToFile("a", "test.txt");
 
         // programmatically create a blob
-        Blob blob = new Blob("test.txt");
-        LOGGER.log(Level.INFO, "Real blob name: " + blob.getSha1());
+        new Blob("test.txt");
 
         String expectedBlobName = Utility.sha1("a");
-        LOGGER.log(Level.INFO, "Expected blob name: " + expectedBlobName);
 
         // Blob should create an objects folder.
         File expectedBlobFile = new File("objects/" + expectedBlobName);

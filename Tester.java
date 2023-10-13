@@ -9,17 +9,18 @@ public class Tester {
         // Tree.add("andrew.txt");
 
         // programmatically create a test file
-        File file = new File("test.txt");
-        file.createNewFile();
+        // File file = new File("test.txt");
+        // file.createNewFile();
 
         // programmatically write to the test file
         // the custom method that writes to file
         // yours will be different
-        Utility.writeToFile("a", "test.txt");
+        // Utility.writeToFile("a", "test.txt");
 
         // programmatically create a blob
-        Blob blob = new Blob("test.txt");
+        // new Blob("test.txt");
 
-        System.out.println("objects/" + Utility.sha1("a"));
+        // System.out.println("objects/" + Utility.sha1("a"));
+        new Commit(null, "andrew", "messag");
     }
 }
