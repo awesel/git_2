@@ -20,19 +20,15 @@ public class Git {
         while ((line = br.readLine()) != null) {
             String[] fullLine = line.split(" : ");
 
-            String typeOfFile = fullLine[0].trim();
-            String sha1OfFile = fullLine[1].trim();
-            String fileName = fullLine[2].trim();
-
-            if ("blob".equals(typeOfFile)) {
-                String content = Utility.readFile("./objects/" + sha1OfFile);
-                Utility.writeToFile(content, fileName);
-            } else if ("tree".equals(typeOfFile)) {
-                File newFolder = new File(fileName);
+            if ("blob".equals(fullLine[0].trim())) {
+                String content = Utility.readFile("./objects/" + fullLine[1].trim());
+                Utility.writeToFile(content, fullLine[2].trim());
+            } else if ("tree".equals(fullLine[1].trim())) {
+                File newFolder = new File(fullLine[2].trim());
                 if (!newFolder.exists()) {
                     newFolder.mkdir();
                 }
-                checkoutHelper(sha1OfFile);
+                checkoutHelper(fullLine[1].trim());
             }
         }
     }
